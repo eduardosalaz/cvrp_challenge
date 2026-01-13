@@ -1898,6 +1898,10 @@ def run_lns_spp_cycles_with_pyvrp_start(coords, demand, Q,
             global_best_routes = [list(r) for r in spp_routes]
             if verbose:
                 print(f"★ New GLOBAL BEST after cycle {k}: {global_best_cost:,.0f} | routes: {len(global_best_routes)}")
+                solution_file = f"XL-n1048-k237_{global_best_cost}.sol"
+                final_cost = total_cost_D(global_best_routes, D, depot=0)
+                write_solution(global_best_routes, final_cost, solution_file)
+
 
     return global_best_routes, global_best_cost, D
 
