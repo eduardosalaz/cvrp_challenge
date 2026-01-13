@@ -457,7 +457,7 @@ def canonical_route(route):
 
 
 def add_routes_to_pool_safe(routes, route_pool, D, n_customers, depot=0,
-                            max_pool=12000, min_cover=2):
+                            max_pool=12000, min_cover=5):
     """
     route_pool: dict{route_tuple: cost}
     Garantiza que cada cliente tenga >= min_cover rutas en el pool antes de podar.
@@ -1648,8 +1648,8 @@ def intensify_from_spp(spp_routes, D, coords, demand, Q,
                        seed=42,
                        verbose=True,
                        max_pool=20000,
-                       collect_every=5,
-                       min_cover=2,
+                       collect_every=1,
+                       min_cover=5,
                        depot=0):
     random.seed(seed)
     np.random.seed(seed)
