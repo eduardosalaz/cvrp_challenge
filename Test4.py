@@ -9,7 +9,7 @@
 #    luego SPP0 y ciclos [intensify -> SPP warm-start].
 # ============================================================
 
-import math, time, random, heapq
+import math, time, random, heapq, os
 import numpy as np
 from collections import defaultdict
 
@@ -21,6 +21,9 @@ from pyvrp.stop import MaxRuntime
 
 # Import CVRP parser
 from cvrp_parser import load_cvrp_instance
+
+# Import vrplib for solution file I/O
+import vrplib
 
 
 # =========================
@@ -130,6 +133,25 @@ def route_cost_D(route, D, depot=0):
 
 def total_cost_D(routes, D, depot=0):
     return sum(route_cost_D(r, D, depot) for r in routes)
+
+
+def write_solution(routes, cost, filepath):
+    """
+    Write CVRP solution to .sol file in VRPLIB format.
+
+    Format:
+        Route #1: 1 5 3 2
+        Route #2: 4 6 7
+        Cost: 1240.5
+
+    Args:
+        routes: list of routes, each route is a list of customer indices (no depot)
+        cost: total solution cost
+        filepath: output .sol file path
+    """
+    # Filter out empty routes
+    valid_routes = [r for r in routes if r]
+    vrplib.write_solution(filepath, valid_routes, data={"Cost": cost})
 
 
 # =========================
@@ -1952,7 +1974,8 @@ else:
     # coords, demand, Q = make_random_instance(n_customers=1000, Q=100, seed=42)
 
     # OPTION 2: Load from a .vrp file (CVRPLib format)
-    coords, demand, Q = load_instance_from_file("XL/XL/XL-n1048-k237.vrp")
+    instance_file = "XL/XL/XL-n1048-k237.vrp"
+    coords, demand, Q = load_instance_from_file(instance_file)
 
 best_routes, best_cost, D = run_lns_spp_cycles_with_pyvrp_start(
     coords, demand, Q,
@@ -2277,3 +2300,9 @@ plot_solution_with_cost(
 )
 print_routes(hex_routes, coords, demand)
 
+# Write final solution to .sol file
+instance_name = os.path.splitext(os.path.basename(instance_file))[0]
+solution_file = f"{instance_name}.sol"
+final_cost = total_cost_D(start_routes, D, depot=0)
+write_solution(start_routes, final_cost, solution_file)
+print(f"\nSolution written to {solution_file} with cost: {final_cost}")
