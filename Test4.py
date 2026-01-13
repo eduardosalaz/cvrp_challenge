@@ -1814,7 +1814,7 @@ def run_lns_spp_cycles_with_pyvrp_start(coords, demand, Q,
         ls_rounds=1,
         seed=seed,
         verbose=verbose,
-        max_pool=150000 if n_customers > 500 else 25000,
+        max_pool=200000 if n_customers > 500 else 25000,
         collect_every=1,
         start_routes=start_routes,
         D_in=D,  # ✅ ahora sí existe
@@ -1886,7 +1886,7 @@ def run_lns_spp_cycles_with_pyvrp_start(coords, demand, Q,
         spp_routes, spp_cost, spp_model, prev_sel = solve_spp_gurobi(
             route_pool,
             n_customers=n_customers,
-            time_limit=240,
+            time_limit=300,
             mip_gap=0.0,
             verbose=verbose,
             prev_selected_routes=prev_sel,
@@ -1984,7 +1984,7 @@ else:
 best_routes, best_cost, D = run_lns_spp_cycles_with_pyvrp_start(
     coords, demand, Q,
     total_time=7200.0,
-    n_cycles=1000,
+    n_cycles=30,
     seed=42,
     k_schedule=[8,5,3,1],     # <- NUEVO
     time_limit_cluster=1800.0,
